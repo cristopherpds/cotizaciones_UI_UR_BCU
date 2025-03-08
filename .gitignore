@@ -1,0 +1,37 @@
+# Archivos de entorno
+.env
+.env.*
+!.env.example
+
+# Directorios de caché
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+cache/*
+!cache/.gitkeep
+
+# Logs
+logs/*
+!logs/.gitkeep
+*.log
+
+# Entorno virtual
+venv/
+env/
+ENV/
+
+# Archivos de distribución
+dist/
+build/
+*.egg-info/
+
+# Archivos de IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Archivos del sistema operativo
+.DS_Store
+Thumbs.db
