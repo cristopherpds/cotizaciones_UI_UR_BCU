@@ -1,5 +1,5 @@
 import os
-from flask import Flask
+from flask import Flask, redirect, url_for, render_template
 from flask_cors import CORS
 from dotenv import load_dotenv
 from flask_swagger_ui import get_swaggerui_blueprint
@@ -56,5 +56,16 @@ def create_app(config_name=None):
     )
     
     app.register_blueprint(swaggerui_blueprint, url_prefix=SWAGGER_URL)
+    
+    # Redirigir la ruta raíz a /docs
+    @app.route('/')
+    def index():
+        return redirect('/docs')
+    
+    # Manejar errores 404 (Página no encontrada)
+    @app.errorhandler(404)
+    def page_not_found(e):
+        # Puedes elegir entre redirigir a /api/info o a /docs
+        return redirect('/docs')
     
     return app
