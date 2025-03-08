@@ -1,6 +1,7 @@
 from app import create_app
 
-application = create_app('production')
+app = create_app('production')
+application = app
 
 if __name__ == '__main__':
-    application.run()
+    app.run()
