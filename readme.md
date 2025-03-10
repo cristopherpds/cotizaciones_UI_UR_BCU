@@ -102,7 +102,11 @@ GET /api/cotizacion/ui?fecha=2023-12-31
   "tipo": "UI",
   "moneda": "UNIDAD INDEXADA",
   "fecha": "2023-12-31",
-  "valor": 5.8642
+  "valor": 5.8642,
+  "metadata": {
+    "fuente": "Banco Central del Uruguay",
+    "fecha_consulta": "2023-12-31 15:30:45"
+  }
 }
 ```
 
@@ -123,7 +127,11 @@ GET /api/cotizacion/ur?fecha=2023-12-31
   "tipo": "UR",
   "moneda": "UNIDAD REAJUSTABLE",
   "fecha": "2023-12-31",
-  "valor": 1532.33
+  "valor": 1532.33,
+  "metadata": {
+    "fuente": "Banco Central del Uruguay",
+    "fecha_consulta": "2023-12-31 15:30:45"
+  }
 }
 ```
 
@@ -133,11 +141,81 @@ GET /api/historico/ui?inicio=YYYY-MM-DD&fin=YYYY-MM-DD
 ```
 Obtener valores históricos de UI para un rango de fechas.
 
+**Ejemplo de solicitud:**
+```
+GET /api/historico/ui?inicio=2023-01-01&fin=2023-01-31
+```
+
+**Ejemplo de respuesta:**
+```json
+{
+  "tipo": "UI",
+  "moneda": "UNIDAD INDEXADA",
+  "fecha_inicio": "2023-01-01",
+  "fecha_fin": "2023-01-31",
+  "cotizaciones": [
+    {
+      "tipo": "UI",
+      "moneda": "UNIDAD INDEXADA",
+      "fecha": "2023-01-01",
+      "valor": 5.4321
+    },
+    {
+      "tipo": "UI",
+      "moneda": "UNIDAD INDEXADA",
+      "fecha": "2023-01-02",
+      "valor": 5.4325
+    }
+    // ... más cotizaciones
+  ],
+  "metadata": {
+    "total_registros": 31,
+    "dias_solicitados": 31,
+    "fuente": "Banco Central del Uruguay"
+  }
+}
+```
+
 #### Obtener datos históricos de UR
 ```
 GET /api/historico/ur?inicio=YYYY-MM-DD&fin=YYYY-MM-DD
 ```
 Obtener valores históricos de UR para un rango de fechas.
+
+**Ejemplo de solicitud:**
+```
+GET /api/historico/ur?inicio=2023-01-01&fin=2023-01-31
+```
+
+**Ejemplo de respuesta:**
+```json
+{
+  "tipo": "UR",
+  "moneda": "UNIDAD REAJUSTABLE",
+  "fecha_inicio": "2023-01-01",
+  "fecha_fin": "2023-01-31",
+  "cotizaciones": [
+    {
+      "tipo": "UR",
+      "moneda": "UNIDAD REAJUSTAB",
+      "fecha": "2023-01-01",
+      "valor": 1490.25
+    },
+    {
+      "tipo": "UR",
+      "moneda": "UNIDAD REAJUSTAB",
+      "fecha": "2023-01-02",
+      "valor": 1490.25
+    }
+    // ... más cotizaciones
+  ],
+  "metadata": {
+    "total_registros": 31,
+    "dias_solicitados": 31,
+    "fuente": "Banco Central del Uruguay"
+  }
+}
+```
 
 ## Características principales
 
@@ -185,6 +263,29 @@ La documentación te permite:
 - Probar las solicitudes directamente desde el navegador
 - Ver los esquemas de respuesta y formatos esperados
 
+### Swagger JSON
+
+La especificación Swagger está disponible en `/api/swagger.json` y contiene la siguiente estructura:
+
+```json
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "BCU Exchange Rate API",
+    "description": "API for retrieving UI and UR values from the Central Bank of Uruguay",
+    "version": "1.0.0"
+  },
+  "basePath": "/api",
+  "schemes": ["http", "https"],
+  "paths": {
+    "/health": {...},
+    "/info": {...},
+    "/cotizacion/{tipo_unidad}": {...},
+    "/historico/{tipo_unidad}": {...}
+  }
+}
+```
+
 ## Contribuir
 
 1. Haz un fork del repositorio
@@ -195,4 +296,4 @@ La documentación te permite:
 
 ## Licencia
 
-Este proyecto está licenciado bajo la Licencia MIT - ver el archivo LICENSE para más detalles.
+Este proyecto está licenciado bajo la Licencia MIT - ver el archivo [LICENSE](LICENSE) para más detalles.
