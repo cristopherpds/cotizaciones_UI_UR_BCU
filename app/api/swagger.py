@@ -1,8 +1,3 @@
-from flask import Blueprint, jsonify
-
-swagger_bp = Blueprint('swagger', __name__)
-
-@swagger_bp.route('/swagger.json')
 def swagger_json():
     """Generate Swagger JSON specification"""
     swagger_spec = {
@@ -12,7 +7,7 @@ def swagger_json():
             "description": "API for retrieving UI and UR values from the Central Bank of Uruguay",
             "version": "1.0.0"
         },
-        "basePath": "/api",
+        "basePath": "/api",  # Base path is already correctly set to /api
         "schemes": ["http", "https"],
         "paths": {
             "/health": {
@@ -31,7 +26,8 @@ def swagger_json():
                                 }
                             }
                         }
-                    }
+                    },
+                    "tags": ["System"]
                 }
             },
             "/info": {
@@ -41,9 +37,20 @@ def swagger_json():
                     "produces": ["application/json"],
                     "responses": {
                         "200": {
-                            "description": "API information returned successfully"
+                            "description": "API information returned successfully",
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "nombre": {"type": "string"},
+                                    "descripcion": {"type": "string"},
+                                    "endpoints": {"type": "array"},
+                                    "características": {"type": "array"},
+                                    "version": {"type": "string"}
+                                }
+                            }
                         }
-                    }
+                    },
+                    "tags": ["System"]
                 }
             },
             "/cotizacion/{tipo_unidad}": {
@@ -73,25 +80,17 @@ def swagger_json():
                         "200": {
                             "description": "Quotation returned successfully",
                             "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "tipo": {"type": "string", "example": "UI"},
-                                    "moneda": {"type": "string", "example": "UNIDAD INDEXADA"},
-                                    "fecha": {"type": "string", "example": "2023-12-31"},
-                                    "valor": {"type": "number", "example": 5.8642}
-                                }
+                                "$ref": "#/definitions/CotizacionResponse"
                             }
                         },
                         "400": {
                             "description": "Bad request",
                             "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "error": {"type": "string"}
-                                }
+                                "$ref": "#/definitions/ErrorResponse"
                             }
                         }
-                    }
+                    },
+                    "tags": ["Quotations"]
                 }
             },
             "/historico/{tipo_unidad}": {
@@ -127,18 +126,19 @@ def swagger_json():
                     ],
                     "responses": {
                         "200": {
-                            "description": "Historical data returned successfully"
+                            "description": "Historical data returned successfully",
+                            "schema": {
+                                "$ref": "#/definitions/HistoricoResponse"
+                            }
                         },
                         "400": {
                             "description": "Bad request",
                             "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "error": {"type": "string"}
-                                }
+                                "$ref": "#/definitions/ErrorResponse"
                             }
                         }
-                    }
+                    },
+                    "tags": ["Quotations"]
                 }
             }
         },
@@ -151,8 +151,64 @@ def swagger_json():
                     "fecha": {"type": "string", "example": "2023-12-31"},
                     "valor": {"type": "number", "example": 5.8642}
                 }
+            },
+            "CotizacionResponse": {
+                "type": "object",
+                "properties": {
+                    "tipo": {"type": "string", "example": "UI"},
+                    "moneda": {"type": "string", "example": "UNIDAD INDEXADA"},
+                    "fecha": {"type": "string", "example": "2023-12-31"},
+                    "valor": {"type": "number", "example": 5.8642},
+                    "metadata": {
+                        "type": "object",
+                        "properties": {
+                            "fuente": {"type": "string", "example": "Banco Central del Uruguay"},
+                            "fecha_consulta": {"type": "string", "example": "2023-12-31 15:30:45"}
+                        }
+                    }
+                }
+            },
+            "HistoricoResponse": {
+                "type": "object",
+                "properties": {
+                    "tipo": {"type": "string", "example": "UI"},
+                    "moneda": {"type": "string", "example": "UNIDAD INDEXADA"},
+                    "fecha_inicio": {"type": "string", "example": "2023-01-01"},
+                    "fecha_fin": {"type": "string", "example": "2023-01-31"},
+                    "cotizaciones": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/Cotizacion"
+                        }
+                    },
+                    "metadata": {
+                        "type": "object",
+                        "properties": {
+                            "total_registros": {"type": "integer", "example": 31},
+                            "dias_solicitados": {"type": "integer", "example": 31},
+                            "fuente": {"type": "string", "example": "Banco Central del Uruguay"}
+                        }
+                    }
+                }
+            },
+            "ErrorResponse": {
+                "type": "object",
+                "properties": {
+                    "error": {"type": "string", "example": "Descripción del error"},
+                    "codigo": {"type": "string", "example": "ERROR_CODE"}
+                }
             }
-        }
+        },
+        "tags": [
+            {
+                "name": "System",
+                "description": "System and diagnostic endpoints"
+            },
+            {
+                "name": "Quotations",
+                "description": "Access to UI and UR quotation data"
+            }
+        ]
     }
     
     return jsonify(swagger_spec)
