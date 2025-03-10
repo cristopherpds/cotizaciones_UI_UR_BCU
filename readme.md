@@ -15,18 +15,20 @@ Este servicio proporciona endpoints REST para consultar valores actuales e hist�
 
 ### Requisitos previos
 
-- Python 3.9+ 
+- Python 3.9+
 - Entorno virtual (recomendado)
 
 ### Instalación
 
 1. Clonar el repositorio:
+
    ```bash
    git clone https://github.com/tuusuario/cotizaciones_UI_UR_BCU.git
    cd cotizaciones_UI_UR_BCU
    ```
 
 2. Crear y activar un entorno virtual:
+
    ```bash
    python -m venv venv
    # En Windows
@@ -36,11 +38,13 @@ Este servicio proporciona endpoints REST para consultar valores actuales e hist�
    ```
 
 3. Instalar dependencias:
+
    ```bash
    pip install -r requirements.txt
    ```
 
 4. Configurar entorno:
+
    ```bash
    # Copiar el archivo de ejemplo
    cp .env.example .env
@@ -50,11 +54,13 @@ Este servicio proporciona endpoints REST para consultar valores actuales e hist�
 ### Ejecutar la aplicación
 
 Para desarrollo:
+
 ```bash
 python run.py
 ```
 
 Para producción:
+
 ```bash
 gunicorn wsgi:application
 ```
@@ -66,12 +72,15 @@ La API cuenta con documentación interactiva mediante Swagger UI, accesible en l
 ### Endpoints principales
 
 #### Verificación de salud
+
 ```
 GET /api/health
 ```
+
 Comprobar si la API está funcionando correctamente.
 
 **Respuesta:**
+
 ```json
 {
   "status": "ok",
@@ -80,23 +89,29 @@ Comprobar si la API está funcionando correctamente.
 ```
 
 #### Información de la API
+
 ```
 GET /api/info
 ```
+
 Obtener información detallada sobre los endpoints disponibles.
 
 #### Obtener cotización de UI
+
 ```
 GET /api/cotizacion/ui?fecha=YYYY-MM-DD
 ```
+
 Obtener el valor de la UI para una fecha específica (por defecto usa la fecha actual si no se proporciona).
 
 **Ejemplo de solicitud:**
+
 ```
 GET /api/cotizacion/ui?fecha=2023-12-31
 ```
 
 **Ejemplo de respuesta:**
+
 ```json
 {
   "tipo": "UI",
@@ -111,17 +126,21 @@ GET /api/cotizacion/ui?fecha=2023-12-31
 ```
 
 #### Obtener cotización de UR
+
 ```
 GET /api/cotizacion/ur?fecha=YYYY-MM-DD
 ```
+
 Obtener el valor de la UR para una fecha específica (por defecto usa la fecha actual si no se proporciona).
 
 **Ejemplo de solicitud:**
+
 ```
 GET /api/cotizacion/ur?fecha=2023-12-31
 ```
 
 **Ejemplo de respuesta:**
+
 ```json
 {
   "tipo": "UR",
@@ -136,17 +155,21 @@ GET /api/cotizacion/ur?fecha=2023-12-31
 ```
 
 #### Obtener datos históricos de UI
+
 ```
 GET /api/historico/ui?inicio=YYYY-MM-DD&fin=YYYY-MM-DD
 ```
+
 Obtener valores históricos de UI para un rango de fechas.
 
 **Ejemplo de solicitud:**
+
 ```
 GET /api/historico/ui?inicio=2023-01-01&fin=2023-01-31
 ```
 
 **Ejemplo de respuesta:**
+
 ```json
 {
   "tipo": "UI",
@@ -177,17 +200,21 @@ GET /api/historico/ui?inicio=2023-01-01&fin=2023-01-31
 ```
 
 #### Obtener datos históricos de UR
+
 ```
 GET /api/historico/ur?inicio=YYYY-MM-DD&fin=YYYY-MM-DD
 ```
+
 Obtener valores históricos de UR para un rango de fechas.
 
 **Ejemplo de solicitud:**
+
 ```
 GET /api/historico/ur?inicio=2023-01-01&fin=2023-01-31
 ```
 
 **Ejemplo de respuesta:**
+
 ```json
 {
   "tipo": "UR",
@@ -259,6 +286,7 @@ La API incluye documentación interactiva mediante Swagger UI. Para acceder a la
 2. Navega a `http://localhost:5000/docs`
 
 La documentación te permite:
+
 - Ver todos los endpoints disponibles
 - Probar las solicitudes directamente desde el navegador
 - Ver los esquemas de respuesta y formatos esperados
