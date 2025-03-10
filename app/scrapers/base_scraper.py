@@ -209,3 +209,129 @@ class BaseScraper:
         except Exception as e:
             import traceback
             return {"error": f"Error al obtener cotización UR: {str(e)}", "traceback": traceback.format_exc()}
+
+    def get_ui_historico(self, fecha_inicio=None, fecha_fin=None):
+        """
+        Obtiene datos históricos de la Unidad Indexada para un rango de fechas
+        
+        Args:
+            fecha_inicio (str, optional): Fecha inicial en formato YYYY-MM-DD
+            fecha_fin (str, optional): Fecha final en formato YYYY-MM-DD
+            
+        Returns:
+            dict: Diccionario con los datos históricos o mensaje de error
+        """
+        try:
+            # Si no se proporcionan fechas, usar últimos 30 días
+            if not fecha_inicio:
+                fecha_fin_obj = datetime.datetime.now()
+                fecha_inicio_obj = fecha_fin_obj - datetime.timedelta(days=30)
+                fecha_inicio = fecha_inicio_obj.strftime('%Y-%m-%d')
+            
+            if not fecha_fin:
+                fecha_fin = datetime.datetime.now().strftime('%Y-%m-%d')
+            
+            # Convertir fechas a objetos datetime para validación
+            fecha_inicio_obj = datetime.datetime.strptime(fecha_inicio, '%Y-%m-%d')
+            fecha_fin_obj = datetime.datetime.strptime(fecha_fin, '%Y-%m-%d')
+            
+            # Validar que fecha_inicio no sea posterior a fecha_fin
+            if fecha_inicio_obj > fecha_fin_obj:
+                return {'error': 'La fecha de inicio no puede ser posterior a la fecha final'}
+            
+            # Validar que el rango no sea mayor a 365 días
+            dias_diferencia = (fecha_fin_obj - fecha_inicio_obj).days
+            if dias_diferencia > 365:
+                return {'error': 'El rango de fechas no puede ser mayor a 365 días'}
+            
+            # Obtener cotizaciones para cada fecha
+            cotizaciones = []
+            fecha_actual = fecha_inicio_obj
+            while fecha_actual <= fecha_fin_obj:
+                fecha_str = fecha_actual.strftime('%Y-%m-%d')
+                resultado = self.get_ui_cotizacion(fecha_str)
+                
+                if 'error' not in resultado:
+                    cotizaciones.append(resultado)
+                
+                fecha_actual += datetime.timedelta(days=1)
+                # Pequeña pausa para no sobrecargar el servidor
+                time.sleep(random.uniform(0.5, 1))
+            
+            if not cotizaciones:
+                return {'error': 'No se encontraron cotizaciones para el rango de fechas especificado'}
+            
+            return {
+                'tipo': 'UI',
+                'moneda': 'UNIDAD INDEXADA',
+                'fecha_inicio': fecha_inicio,
+                'fecha_fin': fecha_fin,
+                'cotizaciones': cotizaciones
+            }
+            
+        except Exception as e:
+            import traceback
+            return {'error': f'Error al obtener datos históricos UI: {str(e)}', 'traceback': traceback.format_exc()}
+    
+    def get_ur_historico(self, fecha_inicio=None, fecha_fin=None):
+        """
+        Obtiene datos históricos de la Unidad Reajustable para un rango de fechas
+        
+        Args:
+            fecha_inicio (str, optional): Fecha inicial en formato YYYY-MM-DD
+            fecha_fin (str, optional): Fecha final en formato YYYY-MM-DD
+            
+        Returns:
+            dict: Diccionario con los datos históricos o mensaje de error
+        """
+        try:
+            # Si no se proporcionan fechas, usar últimos 30 días
+            if not fecha_inicio:
+                fecha_fin_obj = datetime.datetime.now()
+                fecha_inicio_obj = fecha_fin_obj - datetime.timedelta(days=30)
+                fecha_inicio = fecha_inicio_obj.strftime('%Y-%m-%d')
+            
+            if not fecha_fin:
+                fecha_fin = datetime.datetime.now().strftime('%Y-%m-%d')
+            
+            # Convertir fechas a objetos datetime para validación
+            fecha_inicio_obj = datetime.datetime.strptime(fecha_inicio, '%Y-%m-%d')
+            fecha_fin_obj = datetime.datetime.strptime(fecha_fin, '%Y-%m-%d')
+            
+            # Validar que fecha_inicio no sea posterior a fecha_fin
+            if fecha_inicio_obj > fecha_fin_obj:
+                return {'error': 'La fecha de inicio no puede ser posterior a la fecha final'}
+            
+            # Validar que el rango no sea mayor a 365 días
+            dias_diferencia = (fecha_fin_obj - fecha_inicio_obj).days
+            if dias_diferencia > 365:
+                return {'error': 'El rango de fechas no puede ser mayor a 365 días'}
+            
+            # Obtener cotizaciones para cada fecha
+            cotizaciones = []
+            fecha_actual = fecha_inicio_obj
+            while fecha_actual <= fecha_fin_obj:
+                fecha_str = fecha_actual.strftime('%Y-%m-%d')
+                resultado = self.get_ur_cotizacion(fecha_str)
+                
+                if 'error' not in resultado:
+                    cotizaciones.append(resultado)
+                
+                fecha_actual += datetime.timedelta(days=1)
+                # Pequeña pausa para no sobrecargar el servidor
+                time.sleep(random.uniform(0.5, 1))
+            
+            if not cotizaciones:
+                return {'error': 'No se encontraron cotizaciones para el rango de fechas especificado'}
+            
+            return {
+                'tipo': 'UR',
+                'moneda': 'UNIDAD REAJUSTABLE',
+                'fecha_inicio': fecha_inicio,
+                'fecha_fin': fecha_fin,
+                'cotizaciones': cotizaciones
+            }
+            
+        except Exception as e:
+            import traceback
+            return {'error': f'Error al obtener datos históricos UR: {str(e)}', 'traceback': traceback.format_exc()}

@@ -90,7 +90,56 @@ def get_cotizacion(tipo_unidad):
 
 @api_bp.route('/historico/<tipo_unidad>', methods=['GET'])
 def get_historico(tipo_unidad):
-    """Endpoint para obtener datos históricos de una unidad"""
+    """
+    Endpoint para obtener datos históricos de una unidad monetaria (UI o UR)
+    
+    Parámetros de URL:
+    - tipo_unidad: 'ui' para Unidad Indexada, 'ur' para Unidad Reajustable
+    
+    Parámetros de consulta (Query Parameters):
+    - inicio: (opcional) Fecha inicial en formato YYYY-MM-DD
+    - fin: (opcional) Fecha final en formato YYYY-MM-DD
+    
+    Si no se proporcionan fechas:
+    - fecha_fin: se usa la fecha actual
+    - fecha_inicio: se usa 30 días antes de fecha_fin
+    
+    Respuesta exitosa:
+    {
+        "tipo": "UI/UR",
+        "moneda": "UNIDAD INDEXADA/UNIDAD REAJUSTABLE",
+        "fecha_inicio": "YYYY-MM-DD",
+        "fecha_fin": "YYYY-MM-DD",
+        "cotizaciones": [
+            {
+                "tipo": "UI/UR",
+                "moneda": "UNIDAD INDEXADA/UNIDAD REAJUSTABLE",
+                "fecha": "YYYY-MM-DD",
+                "valor": 123.45
+            }
+        ],
+        "metadata": {
+            "total_registros": 30,
+            "dias_solicitados": 30,
+            "fuente": "Banco Central del Uruguay"
+        }
+    }
+    
+    Respuesta de error:
+    {
+        "error": "Descripción del error",
+        "codigo": "CODIGO_ERROR"
+    }
+    
+    Códigos de error:
+    - INVALID_UNIT_TYPE: Tipo de unidad inválido
+    - INVALID_DATE_FORMAT: Formato de fecha inválido
+    - INVALID_DATE_RANGE: Rango de fechas inválido
+    - DATE_RANGE_TOO_LARGE: Rango mayor a 365 días
+    - DATA_FETCH_ERROR: Error al obtener datos del BCU
+    - SCRAPER_ERROR: Error en el proceso de extracción
+    - GENERAL_ERROR: Error general del sistema
+    """
     fecha_inicio = request.args.get('inicio', None)
     fecha_fin = request.args.get('fin', None)
     
