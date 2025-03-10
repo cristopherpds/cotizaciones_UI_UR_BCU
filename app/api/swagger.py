@@ -1,3 +1,8 @@
+from flask import Blueprint, jsonify
+
+swagger_bp = Blueprint('swagger', __name__)
+
+@swagger_bp.route('/swagger.json', methods=['GET'])
 def swagger_json():
     """Generate Swagger JSON specification"""
     swagger_spec = {
